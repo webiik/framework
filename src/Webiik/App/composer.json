@@ -1,0 +1,31 @@
+{
+  "name": "webiik/app",
+  "description": "Core of the Webiik framework.",
+  "homepage": "https://www.webiik.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jiri Mihal",
+      "email": "jiri@mihal.me"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "webiik/container": "^1",
+    "webiik/middleware": "^1",
+    "webiik/data": "^1",
+    "webiik/cookie": "^1",
+    "webiik/session": "^1",
+    "webiik/token": "^1",
+    "webiik/csrf": "^1",
+    "webiik/router": "^1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Webiik\\App\\": ""
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  }
+}

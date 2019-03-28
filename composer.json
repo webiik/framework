@@ -1,0 +1,26 @@
+{
+  "name": "webiik/framework",
+  "description": "Core components of Webiik framework.",
+  "homepage": "https://www.webiik.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jiri Mihal",
+      "email": "jiri@mihal.me"
+    }
+  ],
+  "require": {
+    "php": ">=7.2"
+  },
+  "require-dev": {
+    "webiik/cli-analyse": "^1"
+  },
+  "replace": {
+    "webiik/app": "self.version"
+  },
+  "autoload": {
+    "psr-4": {
+      "Webiik\\": "src/Webiik"
+    }
+  }
+}
