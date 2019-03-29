@@ -10,7 +10,15 @@
     }
   ],
   "require": {
-    "php": ">=7.2"
+    "php": ">=7.2",
+    "webiik/container": "^1",
+    "webiik/middleware": "^1",
+    "webiik/data": "^1",
+    "webiik/cookie": "^1",
+    "webiik/session": "^1",
+    "webiik/token": "^1",
+    "webiik/csrf": "^1",
+    "webiik/router": "^1"
   },
   "require-dev": {
     "webiik/cli-analyse": "^1"
