@@ -61,6 +61,9 @@ class App
         // Sanitize baseUri in configArr
         $configArr['app']['baseUri'] = '/' . trim($configArr['app']['baseUri'], '/');
 
+        // Define WEBIIK_DEBUG for user convenience
+        define('WEBIIK_DEBUG', $configArr['app']['mode'] == 'development');
+
         // Define WEBIIK_BASE_URI for user convenience
         define('WEBIIK_BASE_URI', $configArr['app']['baseUri']);
 
