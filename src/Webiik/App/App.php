@@ -143,6 +143,10 @@ class App
             // Define WEBIIK_BASE_URL for user convenience
             define('WEBIIK_BASE_URL', $router->getBaseURL());
 
+            // Define WEBIIK_BASE_PATH for user convenience
+            // Note: Same as the URL but always has trailing slash
+            define('WEBIIK_BASE_PATH', rtrim(WEBIIK_BASE_URL, '/') . '/');
+
             return $router;
         });
 
