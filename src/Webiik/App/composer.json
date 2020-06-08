@@ -22,7 +22,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Webiik\\App\\": ""
+      "Webiik\\Framework\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"
