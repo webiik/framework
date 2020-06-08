@@ -1,10 +1,12 @@
 Webiik Framework Components
 ===========================
-Core components of Webiik framework. 
+Components for the Webiik framework. 
  
 Components
 ----------
-- [App](./src/Webiik/App/README.md)
+- [App](./src/Webiik/App)
+- [TemplateHelpers](./src/Webiik/TemplateHelpers)
+- [TwigExtension](./src/Webiik/TwigExtension)
 
 Resources
 ---------
