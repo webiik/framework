@@ -1,0 +1,25 @@
+{
+  "name": "webiik/template-helpers",
+  "description": "Webiik functions for templates.",
+  "homepage": "https://www.webiik.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jiri Mihal",
+      "email": "jiri@mihal.me"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "webiik/router": "^1",
+    "webiik/translation": "^1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Webiik\\Framework\\": ""
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  }
+}

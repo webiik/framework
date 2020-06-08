@@ -1,0 +1,24 @@
+{
+  "name": "webiik/twig-extension",
+  "description": "Twig extension for the Webiik framework.",
+  "homepage": "https://www.webiik.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jiri Mihal",
+      "email": "jiri@mihal.me"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "webiik/template-helpers": "^1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Webiik\\Framework\\": ""
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  }
+}
