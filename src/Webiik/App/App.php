@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Webiik\App;
+namespace Webiik\Framework;
 
 use Webiik\Container\Container;
 use Webiik\Cookie\Cookie;
@@ -25,12 +25,6 @@ class App
     private $middleware;
 
     /**
-     * Registered extension dirs and paths
-     * @var array
-     */
-    private $extensions = [];
-
-    /**
      * App constructor.
      * @throws \Exception
      */
@@ -47,9 +41,6 @@ class App
             return new Data();
         });
         $wsConfig = $this->container->get('wsConfig');
-
-        // Add place for registered extension dirs and paths
-        $this->container->addParam('wpExtensions', []);
 
         // Load the 'app' config file to configArr
         if (file_exists(WEBIIK_BASE_DIR . '/config/app.local.php')) {
@@ -180,9 +171,6 @@ class App
      */
     public function run(): void
     {
-        // Add registered extensions to container
-        $this->container->addParam('wpExtensions', $this->extensions);
-
         // Load shared or lang specific routes
         $router = $this->container->get('Webiik\Router\Router');
         /** @var Router $router */
@@ -206,18 +194,6 @@ class App
         } elseif ($router->getHttpCode() == 405) {
             $routeController = 'Webiik\Controller\P405:run';
 
-        } elseif ($router->getHttpCode() == 404) {
-            // Load extensions
-            $this->loadExtensions();
-            $route = $router->match();
-
-            if ($router->getHttpCode() == 200) {
-                $routeController = $route->getController();
-                $routeController = $routeController[0] . ':' . $routeController[1];
-
-            } elseif ($router->getHttpCode() == 405) {
-                $routeController = 'Webiik\Controller\P405:run';
-            }
         }
 
         // Add Route object to Container
@@ -233,75 +209,6 @@ class App
 
         // Run middleware
         $this->middleware->run();
-    }
-
-    /**
-     * Register extension
-     * @param string $dirname
-     * @param string $uri
-     */
-    public function use(string $dirname, string $uri = '/'): void
-    {
-        // Add list of registered extensions to container
-        if (!$uri) {
-            $uri = '/';
-        } elseif ($uri != '/') {
-            $uri = '/' . trim($uri, '/') . '/';
-        }
-        $this->extensions[$dirname] = $uri;
-    }
-
-    /**
-     * Load config, services, middleware and routes from all registered extensions
-     */
-    private function loadExtensions(): void
-    {
-        // Get Router
-        $router = $this->container->get('Webiik\Router\Router');
-
-        $uri = $this->getStrippedUri();
-
-        // Iterate registered extensions
-        foreach ($this->extensions as $dirname => $extUri) {
-
-            // Load extension only if extension URI match current URI
-            if (!preg_match('~^' . $extUri . '~', $uri)) {
-                continue;
-            }
-
-            // Load extension's shared or lang specific routes
-            $routes = $this->loadConfig('routes', WEBIIK_BASE_DIR . '/../extensions/' . $dirname . '/config/routes');
-
-            // Add extension's route
-            foreach ($routes as $routeName => $route) {
-                // Set extension route prefix
-                $route['uri'] = $extUri . trim($route['uri'], '/');
-
-                // Add only route that matches current URI
-                if (!preg_match('~^' . $route['uri'] . '~', $uri)) {
-                    continue;
-                }
-
-                // Add route
-                $newRoute = $router->addRoute($route['methods'], '/' . trim($route['uri'], '/'),
-                    '\WE\\' . $dirname . '\Controller\\' . $route['controller'], $routeName);
-
-                // Add route middleware
-                foreach ($route['mw'] as $controller => $data) {
-                    $newRoute->mw($controller, $data);
-                }
-
-                // Load models from container/models.{WEBIIK_LANG}.php
-                $load = $this->loadConfig('models',
-                    WEBIIK_BASE_DIR . '/../extensions/' . $dirname . '/config/container');
-                foreach ($load as $service => $factory) {
-                    $this->container->addService($service, $factory);
-                }
-
-                // We've found the route, don't load other routes or extensions
-                break 2;
-            }
-        }
     }
 
     /**
