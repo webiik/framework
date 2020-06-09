@@ -11,6 +11,7 @@
   ],
   "require": {
     "php": ">=7.2",
+    "webiik/ssr": "^1",
     "webiik/router": "^1",
     "webiik/translation": "^1"
   },

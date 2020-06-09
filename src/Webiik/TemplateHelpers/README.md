@@ -1,6 +1,6 @@
 <p align="left">
 <img src="https://img.shields.io/packagist/l/webiik/webiik.svg"/>
-<img src="https://img.shields.io/badge/dependencies-2-orange.svg"/>
+<img src="https://img.shields.io/badge/dependencies-3-orange.svg"/>
 </p>
 
 TemplateHelpers
