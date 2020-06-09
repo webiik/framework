@@ -73,7 +73,7 @@ class TemplateHelpers
             foreach ($this->getAssets() as $iRoute => $obj) {
                 if ($iRoute == '_app' || $iRoute == $route || $iRoute == $isoRoute) {
                     foreach ($obj->js as $link) {
-                        $html .= '<script src="' . WEBIIK_BASE_PATH . 'assets/app/' . $link . '"></script>';
+                        $html .= '<script src="' . WEBIIK_BASE_PATH . 'assets/' . $link . '"></script>';
                     }
                 }
             }
@@ -93,7 +93,7 @@ class TemplateHelpers
             foreach ($this->getAssets() as $iRoute => $obj) {
                 if ($iRoute == '_app' || $iRoute == $route || $iRoute == $isoRoute) {
                     foreach ($obj->css as $link) {
-                        $html .= '<link rel="stylesheet" href="' . WEBIIK_BASE_PATH . 'assets/app/' . $link . '" type="text/css">';
+                        $html .= '<link rel="stylesheet" href="' . WEBIIK_BASE_PATH . 'assets/' . $link . '" type="text/css">';
                     }
                 }
             }
@@ -140,13 +140,12 @@ class TemplateHelpers
      */
     private function getAssets(): object
     {
-        if ($this->assets) {
-            // Get assets from cache
-            $assets = $this->assets;
-        } else {
+        if (!$this->assets) {
             // Cache assets
             $this->assets = json_decode(file_get_contents(WEBIIK_BASE_DIR . '/frontend/assets/build/assets.json'));
         }
-        return $assets;
+
+        // Get assets from cache
+        return $this->assets;
     }
 }
