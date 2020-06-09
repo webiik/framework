@@ -5,10 +5,16 @@ namespace Webiik\Framework;
 
 use Webiik\Router\Route;
 use Webiik\Router\Router;
+use Webiik\Ssr\Ssr;
 use Webiik\Translation\Translation;
 
 class TemplateHelpers
 {
+    /**
+     * @var Ssr
+     */
+    private $ssr;
+
     /**
      * @var Router
      */
@@ -32,12 +38,14 @@ class TemplateHelpers
 
     /**
      * Helpers constructor.
+     * @param Ssr $ssr
      * @param Router $router
      * @param Route $route
      * @param Translation $translation
      */
-    public function __construct(Router $router, Route $route, Translation $translation)
+    public function __construct(Ssr $ssr, Router $router, Route $route, Translation $translation)
     {
+        $this->ssr = $ssr;
         $this->router = $router;
         $this->route = $route;
         $this->translation = $translation;
@@ -52,12 +60,10 @@ class TemplateHelpers
         return function (string $name, array $props, array $options = []): string {
             // Server-ready JS for current route
             $routeName = $this->route->getName();
-            $script = WEBIIK_BASE_DIR . '/frontend/app/build/server/' . $routeName . '-iso.js';
+            $script = WEBIIK_BASE_DIR . '/frontend/assets/build/server/' . $routeName . '-iso.js';
 
             // Render JS on (server and) client
-            $ssr = new \Webiik\Ssr\Ssr();
-            $ssr->useEngine(new \Webiik\Ssr\Engines\V8js());
-            return $ssr->render($script, $name, $props, $options);
+            return $this->ssr->render($script, $name, $props, $options);
         };
     }
 
