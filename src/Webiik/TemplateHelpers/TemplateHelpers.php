@@ -37,6 +37,15 @@ class TemplateHelpers
     private $assets;
 
     /**
+     * Array with all JS assets, categorized by before/after DOM
+     * @var array
+     */
+    private $js = [
+        'before' => '',
+        'after' => '',
+    ];
+
+    /**
      * Helpers constructor.
      * @param Ssr $ssr
      * @param Router $router
@@ -73,17 +82,30 @@ class TemplateHelpers
      */
     public function getJs(): callable
     {
-        return function (string $route): string {
-            $html = '';
+        return function (string $route, bool $beforeDOM): string {
             $isoRoute = $route . '-iso';
+
+            if ($beforeDOM && $this->js['before']) {
+                return $this->js['before'];
+            }
+
+            if (!$beforeDOM && $this->js['after']) {
+                return $this->js['after'];
+            }
+
             foreach ($this->getAssets() as $iRoute => $obj) {
                 if ($iRoute == '_app' || $iRoute == $route || $iRoute == $isoRoute) {
                     foreach ($obj->js as $link) {
-                        $html .= '<script src="' . WEBIIK_BASE_PATH . 'assets/' . $link . '"></script>';
+                        if (preg_match('/vendors~|\-iso\.js|runtime\.js/', $link)) {
+                            $this->js['before'] .= '<script src="' . WEBIIK_BASE_PATH . 'assets/' . $link . '"></script>';
+                        } else {
+                            $this->js['after'] .= '<script src="' . WEBIIK_BASE_PATH . 'assets/' . $link . '"></script>';
+                        }
                     }
                 }
             }
-            return $html;
+
+            return $beforeDOM ? $this->js['before'] : $this->js['after'];
         };
     }
 
