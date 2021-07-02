@@ -46,6 +46,12 @@ class TemplateHelpers
     ];
 
     /**
+     * (cache) Relative path to assets directory
+     * @var
+     */
+    private $assetsDirRelativePath;
+
+    /**
      * Helpers constructor.
      * @param Ssr $ssr
      * @param Router $router
@@ -94,12 +100,12 @@ class TemplateHelpers
             }
 
             foreach ($this->getAssets() as $iRoute => $obj) {
-                if ($iRoute == '_app' || $iRoute == $route || $iRoute == $isoRoute) {
+                if ($iRoute == $route || $iRoute == $isoRoute || preg_match('/^_/', $iRoute)) {
                     foreach ($obj->js as $link) {
-                        if (preg_match('/vendors~|\-iso\.js|runtime\.js/', $link)) {
-                            $this->js['before'] .= '<script src="' . WEBIIK_BASE_PATH . 'assets/' . $link . '"></script>';
+                        if (preg_match('/vendors~|\-iso\.\w+\.js|runtime\.\w+\.js/', $link) || preg_match('/_$/', $iRoute)) {
+                            $this->js['before'] .= '<script src="' . $this->getAssetsDirRelativePath() . $link . '"></script>';
                         } else {
-                            $this->js['after'] .= '<script src="' . WEBIIK_BASE_PATH . 'assets/' . $link . '"></script>';
+                            $this->js['after'] .= '<script src="' . $this->getAssetsDirRelativePath() . $link . '"></script>';
                         }
                     }
                 }
@@ -119,9 +125,9 @@ class TemplateHelpers
             $html = '';
             $isoRoute = $route . '-iso';
             foreach ($this->getAssets() as $iRoute => $obj) {
-                if ($iRoute == '_app' || $iRoute == $route || $iRoute == $isoRoute) {
+                if ($iRoute == $route || $iRoute == $isoRoute || preg_match('/^_/', $iRoute)) {
                     foreach ($obj->css as $link) {
-                        $html .= '<link rel="stylesheet" href="' . WEBIIK_BASE_PATH . 'assets/' . $link . '" type="text/css">';
+                        $html .= '<link rel="stylesheet" href="' . $this->getAssetsDirRelativePath() . $link . '" type="text/css">';
                     }
                 }
             }
@@ -175,5 +181,16 @@ class TemplateHelpers
 
         // Get assets from cache
         return $this->assets;
+    }
+
+    /**
+     * @return string
+     */
+    private function getAssetsDirRelativePath(): string
+    {
+        if (is_null($this->assetsDirRelativePath)) {
+            $this->assetsDirRelativePath = ltrim(preg_replace('/[^\/]+/', '..', str_replace(WEBIIK_BASE_URI, '', $_SERVER['REQUEST_URI'])), '/') . 'assets/';
+        }
+        return $this->assetsDirRelativePath;
     }
 }
